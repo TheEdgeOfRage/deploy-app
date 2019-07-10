@@ -1,13 +1,66 @@
-import Vue from 'vue'
-import './plugins/vuetify'
-import App from './App.vue'
-import router from './router'
-import store from './store'
+import Vue from 'vue';
+import Axios from 'axios';
 
-Vue.config.productionTip = false
+import './plugins/vuetify';
+import App from './components/app.vue';
+import AuthController from './controllers/auth.controller';
+import router from './router';
+import store from './store';
+
+Vue.config.productionTip = false;
+
+const configureHttp = () => {
+	Axios.defaults.headers.Accept = 'application/json';
+	Axios.interceptors.request.use((config) => {
+		return new Promise((resolve, reject) => {
+			switch (config.url) {
+				case '/refresh':
+				case '/login':
+				case '/signup':
+					resolve(config);
+					return;
+				default:
+					break;
+			}
+
+			if (!AuthController.checkToken()) {
+				AuthController.refreshToken().then(() => {
+					resolve(config);
+				}).catch(() => {
+					router.push({ name: 'logout' });
+					reject(config);
+				});
+				return;
+			}
+
+			resolve(config);
+		});
+	});
+
+	Axios.interceptors.response.use(
+		(response) => {
+			return response;
+		},
+		(error) => {
+			if (error.response && error.response.status === 401) {
+				router.push({ name: 'logout' });
+				return Promise.reject(error);
+			}
+
+			console.log(error);
+			return Promise.reject(error);
+		}
+	);
+};
+
+AuthController.authorize();
+configureHttp();
 
 new Vue({
-  router,
-  store,
-  render: function (h) { return h(App) }
-}).$mount('#app')
+	router,
+	store,
+	render (h) {
+		return h(App);
+	},
+}).$mount('#app');
+

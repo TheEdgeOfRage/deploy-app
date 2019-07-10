@@ -1,27 +1,56 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import Home from './views/Home.vue'
+import Vue from 'vue';
+import Router from 'vue-router';
 
-Vue.use(Router)
+import AuthController from '@/controllers/auth.controller.js';
+import IndexView from '@/views/index.view.vue';
+import LoginView from '@/views/login.view.vue';
+import SignupView from '@/views/signup.view.vue';
+import store from '@/store';
 
-export default new Router({
-  mode: 'history',
-  base: process.env.BASE_URL,
-  routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: Home
-    },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: function () {
-        return import(/* webpackChunkName: "about" */ './views/About.vue')
-      }
-    }
-  ]
-})
+Vue.use(Router);
+
+// component () { return import([> webpackChunkName: "about" <] './views/About.vue'); },
+
+const router = new Router({
+	mode: 'history',
+	base: process.env.BASE_URL,
+	routes: [
+		{
+			path: '/',
+			name: 'index',
+			component: IndexView,
+		},
+		{
+			path: '/login',
+			name: 'login',
+			component: LoginView,
+			meta: {
+				guest: true,
+			},
+		},
+		{
+			path: '/signup',
+			name: 'signup',
+			component: SignupView,
+			meta: {
+				guest: true,
+			},
+		},
+		{
+			path: '/logout',
+			name: 'logout',
+		},
+	],
+});
+
+router.beforeEach((to, from, next) => {
+	if (to.name === 'logout' || (!to.meta.guest && !store.getters.authStatus)) {
+		AuthController.logout();
+		return next({ name: 'login' });
+	}
+
+	return next();
+});
+
+export default router;
+
