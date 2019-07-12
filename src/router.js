@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 
 import AuthController from '@/controllers/auth.controller.js';
-import IndexView from '@/views/index.view.vue';
+import StackView from '@/views/stack.view.vue';
 import LoginView from '@/views/login.view.vue';
 import SignupView from '@/views/signup.view.vue';
 import store from '@/store';
@@ -18,7 +18,7 @@ const router = new Router({
 		{
 			path: '/',
 			name: 'index',
-			component: IndexView,
+			component: StackView,
 		},
 		{
 			path: '/login',

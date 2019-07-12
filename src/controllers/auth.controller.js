@@ -81,6 +81,7 @@ export default class AuthController {
 		return AuthApi.refreshToken(refresh_token).then((response) => {
 			AuthController.setLocalStorageToken(url, response.data.access_token, null);
 			AuthController.authorize();
+			return response;
 		});
 	}
 

@@ -21,7 +21,7 @@
 			</v-card-text>
 			<v-card-actions>
 				<v-spacer></v-spacer>
-				<v-btn color="primary darken-1" @click="closeDialog">Close</v-btn>
+				<v-btn color="primary darken-1" @click="$emit('close')">Close</v-btn>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>
@@ -34,34 +34,31 @@ export default {
 		'dialog',
 		'data',
 	],
-	methods: {
-		closeDialog() {
-			this.$emit('close');
-		},
-	},
 };
 </script>
 
 <style lang="stylus">
-.result-header
-	display flex
-	justify-content space-between
-	padding-right 1rem
-	font-family monospace
+.result
+	margin-top 1rem
 
-.result-body
-	margin-left 1rem
-	padding 0.1rem 0.4rem
+	.result-header
+		display flex
+		justify-content space-between
+		padding-right 1rem
+		font-family monospace
+		font-weight 700
 
-code
-	color #fff
-	background #282828
-	width calc(100% - 2rem)
+	.result-body
+		width calc(100% - 2rem)
+		margin-left 1rem
+		padding 0.2rem 0.5rem
+		color #fff
+		background #282828
 
-	::before
-		display none
+		&::before
+			display none
 
-	::after
-		display none
+		&::after
+			display none
 </style>
 

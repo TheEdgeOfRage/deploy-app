@@ -4,6 +4,7 @@
 			<v-card-title>
 				<span class="headline">Execute container commands</span>
 			</v-card-title>
+			<v-progress-linear v-if="loading" :indeterminate="true"></v-progress-linear>
 			<v-card-text>
 					<v-layout wrap>
 						<v-flex xs12>
@@ -17,8 +18,8 @@
 			</v-card-text>
 			<v-card-actions>
 				<v-spacer></v-spacer>
-				<v-btn color="red darken-1" @click="closeExecDialog">Close</v-btn>
-				<v-btn color="green darken-1" @click="execCommands">Execute</v-btn>
+				<v-btn color="red darken-1" :disabled="loading" @click="closeExecDialog">Close</v-btn>
+				<v-btn color="green darken-1" :disabled="loading" @click="execCommands">Execute</v-btn>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>
@@ -32,6 +33,7 @@ export default {
 	data() {
 		return {
 			commands: '',
+			loading: false,
 		};
 	},
 	props: [
@@ -44,11 +46,15 @@ export default {
 			this.commands = '';
 		},
 		execCommands() {
+			this.loading = true;
 			const commands = this.commands.split('\n');
-			this.closeExecDialog();
 			ContainerApi.execCommands(this.id, { commands }).then((response) => {
+				this.closeExecDialog();
+				this.loading = false;
 				this.$emit('success', response.data);
 			}).catch((error) => {
+				this.closeExecDialog();
+				this.loading = false;
 				this.$emit('failed', error.response.data);
 			});
 		},

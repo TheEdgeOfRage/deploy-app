@@ -11,4 +11,8 @@ export default class ContainerApi {
 	static execCommands(id, commands) {
 		return Axios.post(`/containers/${id}/exec`, commands);
 	}
+
+	static getLogs(id) {
+		return Axios.get(`/containers/${id}/logs`);
+	}
 }

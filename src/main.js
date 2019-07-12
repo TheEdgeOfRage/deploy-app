@@ -24,7 +24,8 @@ const configureHttp = () => {
 			}
 
 			if (!AuthController.checkToken()) {
-				AuthController.refreshToken().then(() => {
+				AuthController.refreshToken().then((response) => {
+					config.headers.Authorization = `Bearer ${response.data.access_token}`;
 					resolve(config);
 				}).catch(() => {
 					router.push({ name: 'logout' });

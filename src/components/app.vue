@@ -27,15 +27,13 @@
 <script>
 import { mapGetters } from 'vuex';
 
-import AuthController from '@/controllers/auth.controller.js';
-
 export default {
 	name: 'app',
 	data() {
 		return {
 			toolbarItems: {
 				true: [
-					{ icon: 'fas fa-home', text: 'Index', to: { name: 'index' } },
+					{ icon: 'fas fa-layer-group', text: 'services', to: { name: 'index' } },
 					{ icon: 'fas fa-sign-out-alt', text: 'Logout', to: { name: 'logout' } },
 				],
 				false: [
@@ -47,13 +45,6 @@ export default {
 	},
 	computed: {
 		...mapGetters(['authStatus']),
-	},
-	mounted() {
-		AuthController.refreshToken().catch(() => {
-			if (!this.$route.meta.guest) {
-				this.$router.push({ name: 'index' });
-			}
-		});
 	},
 };
 </script>
