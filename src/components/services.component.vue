@@ -4,6 +4,7 @@
 		:items="services"
 		:expand="expand"
 		:loading="loading"
+		item-key="name"
 		class="elevation-1"
 		hide-actions
 	>
@@ -15,6 +16,16 @@
 				<td class="text-lg-center">{{ props.item.tag }}</td>
 				<td class="text-lg-center">
 					<v-icon :class="{'red--text': !props.item.active, 'green--text': props.item.active}">fas fa-circle</v-icon>
+				</td>
+				<td class="text-lg-center">
+					<v-btn
+						flat
+						icon
+						color="red darken-1"
+						@click.stop="$emit('delete-service', props.item.name)"
+					>
+						<v-icon small>fas fa-trash</v-icon>
+					</v-btn>
 				</td>
 			</tr>
 		</template>
@@ -56,7 +67,7 @@
 					</v-tooltip>
 					<v-tooltip bottom>
 						<template v-slot:activator="{ on }">
-							<v-btn flat icon color="green darken-1" @click="$emit('new-service')" v-on="on">
+							<v-btn flat icon color="green darken-1" @click="$emit('add-service')" v-on="on">
 								<v-icon>fas fa-plus</v-icon>
 							</v-btn>
 						</template>
@@ -80,6 +91,7 @@ export default {
 				{ text: 'Image', value: 'repository', align: 'center', sortable: false },
 				{ text: 'Tag', value: 'tag', align: 'center', sortable: false },
 				{ text: 'Active', value: 'acitve', align: 'center', sortable: false },
+				{ text: 'Actions', value: 'actions', align: 'center', sortable: false },
 			],
 		};
 	},

@@ -11,5 +11,9 @@ export default class DeployApi {
 	static updateStack() {
 		return Axios.post('/deploy');
 	}
+
+	static checkStackUpdate(taskId) {
+		return Axios.get(`/tasks/${taskId}`);
+	}
 }
 

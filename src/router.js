@@ -32,9 +32,6 @@ const router = new Router({
 			path: '/signup',
 			name: 'signup',
 			component: SignupView,
-			meta: {
-				guest: true,
-			},
 		},
 		{
 			path: '/logout',

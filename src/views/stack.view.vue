@@ -6,12 +6,13 @@
 				<div class="v-spacer-5"></div>
 				<services
 					:services="services"
-					:loading="loadingServices"
+					:loading="loading"
 					@open-exec-dialog="openExecDialog"
 					@open-log-results="getContainerLogs"
+					@delete-service="showDeleteServiceDialog"
+					@add-service="showAddServiceDialog = true"
 					@reload-services="reloadServices"
-					@new-service="showNewServiceDialog = true"
-					@update-stack="showUpdateStackDialog = true"
+					@update-stack="showUpdateStackDialog"
 				></services>
 				<exec-dialog
 					:dialog="showExecDialog"
@@ -30,18 +31,20 @@
 					:logs="containerLogs"
 					@close="showLogResults = false"
 				></log-results>
-				<stack-update-results
-					:dialog="showStackUpdateResults"
-					:logs="stackUpdateLogs"
-					:failed="stackUpdateFailed"
-					@close="showStackUpdateResults = false"
-				></stack-update-results>
-				<update-stack-dialog
-					:dialog="showUpdateStackDialog"
-					:updating="updatingStack"
-					@close="showUpdateStackDialog = false"
-					@update-stack="updateStack"
-				></update-stack-dialog>
+				<add-service-dialog
+					:dialog="showAddServiceDialog"
+					@close="showAddServiceDialog = false"
+					@success="reloadServices"
+				></add-service-dialog>
+				<custom-dialog
+					:dialog="showDialog"
+					:loading="loadingDialog"
+					:title="dialogTitle"
+					:content="dialogContent"
+					:button="dialogButton"
+					@close="showDialog = false"
+					@confirm="confirmDialog"
+				></custom-dialog>
 			</v-flex>
 		</v-container>
 	</div>
@@ -54,9 +57,9 @@ import ServiceApi from '@/api/service.api';
 import ExecDialog from '@/components/exec-dialog.component';
 import ExecResults from '@/components/exec-results.component';
 import LogResults from '@/components/log-results.component';
-import StackUpdateResults from '@/components/stack-update-results.component';
 import Services from '@/components/services.component.vue';
-import UpdateStackDialog from '@/components/update-stack-dialog.component';
+import CustomDialog from '@/components/custom-dialog.component';
+import AddServiceDialog from '@/components/add-service-dialog.component';
 
 export default {
 	name: 'stack-view',
@@ -64,15 +67,16 @@ export default {
 		ExecDialog,
 		ExecResults,
 		LogResults,
-		StackUpdateResults,
 		Services,
-		UpdateStackDialog,
+		CustomDialog,
+		AddServiceDialog,
 	},
 	data () {
 		return {
 			services: [],
-			loadingServices: true,
-			loadingExec: false,
+			reloadServicesInterval: null,
+			stackUpdateInterval: null,
+			loading: true,
 			containerId: null,
 			showExecDialog: false,
 			showExecResults: false,
@@ -81,19 +85,20 @@ export default {
 				msg: '',
 				output: '',
 			},
-			showUpdateStackDialog: false,
-			showStackUpdateResults: false,
-			stackUpdateLogs: {
-				msg: '',
-				err: '',
-			},
 			stackUpdateFailed: false,
-			showNewServiceDialog: false,
-			updatingStack: false,
+			stackUpdateTaskId: null,
+			showAddServiceDialog: false,
 			execData: {
 				message: '',
 				results: null,
 			},
+			showDialog: false,
+			loadingDialog: false,
+			dialogTitle: '',
+			dialogContent: '',
+			dialogButton: '',
+			dialogCallback: null,
+			dialogCallbackData: null,
 		};
 	},
 	methods: {
@@ -117,36 +122,115 @@ export default {
 			this.showExecResults = true;
 		},
 		reloadServices() {
-			ServiceApi.get().then((response) => {
-				this.loadingServices = false;
+			ServiceApi.getServices().then((response) => {
+				this.loading = false;
 				this.services = response.data;
 			});
 		},
 		updateStack() {
-			this.updatingStack = true;
+			this.loadingDialog = true;
+			this.stopServicePolling();
 			DeployApi.updateStack().then((response) => {
-				this.updatingStack = false;
-				this.showUpdateStackDialog = false;
-				this.showStackUpdateResults = true;
-				this.stackUpdateLogs = response.data;
-				this.stackUpdateFailed = false;
+				this.startStackUpdateChecker(response.data['task_id']);
 			}).catch((error) => {
-				this.updatingStack = false;
-				this.showUpdateStackDialog = false;
+				this.startServicePolling();
+				console.log(error);
+			});
+		},
+		checkStackUpdate() {
+			DeployApi.checkStackUpdate(this.stackUpdateTaskId).then((response) => {
+				if (response.status === 200) {
+					this.stopStackUpdateChecker();
+					this.stackUpdateFinished(response.data, false);
+				}
+			}).catch((error) => {
+				this.stopStackUpdateChecker();
 				if (error.response && error.response.data) {
-					this.showStackUpdateResults = true;
-					this.stackUpdateLogs = error.response.data;
-					this.stackUpdateFailed = true;
+					this.stackUpdateFinished(error.response.data, true);
+				} else {
+					this.stackUpdateFinished({ 'err': 'Stack update failed', 'msg': 'Unknown error' }, true);
+					console.log(error);
 				}
 			});
+		},
+		stackUpdateFinished(data, failed) {
+			this.startServicePolling();
+			if (failed) {
+				this.dialogTitle = data.err;
+				this.dialogContent = `<span class="text--red">${data.msg}</span>`;
+			} else {
+				this.dialogTitle = 'Stack update successful';
+				this.dialogContent = data.msg;
+			}
+			this.dialogButton = null;
+			this.showDialog = true;
+		},
+		showUpdateStackDialog() {
+			this.dialogTitle = 'Update services?';
+			this.dialogContent = 'This option will update and restart <strong>ALL</strong> services. Prepare for a few minutes of downtime';
+			this.dialogButton = 'Update';
+			this.dialogCallback = this.updateStack;
+			this.dialogCallbackData = null;
+			this.showDialog = true;
+		},
+		deleteService(name) {
+			this.loadingDialog = true;
+			ServiceApi.deleteService(name).then(() => {
+				this.reloadServices();
+				this.loadingDialog = false;
+				this.showDialog = false;
+			}).catch((error) => {
+				this.loadingDialog = false;
+				if (error.response && error.response.data) {
+					this.dialogTitle = error.response.data.err;
+					this.dialogContent = error.response.data.msg;
+				} else {
+					this.dialogTitle = 'Delete service failed';
+					this.dialogContent = 'Unknown error';
+					console.log(error);
+				}
+				this.dialogButton = false;
+			});
+		},
+		showDeleteServiceDialog(name) {
+			this.dialogTitle = 'Delete service?';
+			this.dialogContent = `This will delete the <tt>${name}</tt> service from the list, but not stop it's containers. You can readd it later with the same or different options.`;
+			this.dialogButton = 'Delete';
+			this.dialogCallback = this.deleteService;
+			this.dialogCallbackData = name;
+			this.showDialog = true;
+		},
+		confirmDialog() {
+			if (this.dialogCallbackData) {
+				this.dialogCallback(this.dialogCallbackData);
+			} else {
+				this.dialogCallback();
+			}
+		},
+		startServicePolling() {
+			this.reloadServicesInterval = setInterval(this.reloadServices, 5000);
+		},
+		stopServicePolling() {
+			window.clearInterval(this.reloadServicesInterval);
+		},
+		startStackUpdateChecker(taskId) {
+			this.stackUpdateTaskId = taskId;
+			this.loading = true;
+			this.loadingDialog = false;
+			this.showDialog = false;
+			this.stackUpdateInterval = setInterval(this.checkStackUpdate, 10000);
+		},
+		stopStackUpdateChecker() {
+			this.loading = false;
+			window.clearInterval(this.stackUpdateInterval);
 		},
 	},
 	mounted() {
 		this.reloadServices();
-		this.reloadServicesInterval = setInterval(this.reloadServices, 2000);
+		this.startServicePolling();
 	},
-	unmounted() {
-		window.clearInterwal(this.reloadServicesInterval);
+	destroyed() {
+		this.stopServicePolling();
 	},
 };
 </script>

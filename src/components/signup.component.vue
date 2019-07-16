@@ -1,6 +1,6 @@
 <template>
 	<v-card class="signup-form-card">
-		<h3>Sign up</h3>
+		<h3>Create User</h3>
 		<form @submit="submit">
 			<v-text-field
 				v-model="url"

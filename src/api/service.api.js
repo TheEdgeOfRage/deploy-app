@@ -8,8 +8,16 @@
 import Axios from 'axios';
 
 export default class ServiceApi {
-	static get() {
+	static getServices() {
 		return Axios.get('/services');
+	}
+
+	static addService(data) {
+		return Axios.post('/services', data);
+	}
+
+	static deleteService(name) {
+		return Axios.delete(`/services/${name}`);
 	}
 }
 

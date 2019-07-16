@@ -33,13 +33,11 @@ export default {
 		return {
 			toolbarItems: {
 				true: [
-					{ icon: 'fas fa-layer-group', text: 'services', to: { name: 'index' } },
+					{ icon: 'fas fa-layer-group', text: 'Services', to: { name: 'index' } },
+					{ icon: 'fas fa-user-plus ', text: 'Create user', to: { name: 'signup' } },
 					{ icon: 'fas fa-sign-out-alt', text: 'Logout', to: { name: 'logout' } },
 				],
-				false: [
-					{ icon: 'fas fa-sign-in-alt', text: 'Login', to: { name: 'login' } },
-					{ icon: 'fas fa-user-plus ', text: 'Sign up', to: { name: 'signup' } },
-				],
+				false: [{ icon: 'fas fa-sign-in-alt', text: 'Login', to: { name: 'login' } }],
 			},
 		};
 	},
@@ -55,7 +53,4 @@ export default {
 		a
 			color white
 			text-decoration none
-
-.v-spacer-5
-	margin-top 5rem
 </style>
