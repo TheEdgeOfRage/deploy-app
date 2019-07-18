@@ -6,6 +6,7 @@ README.md
 Dockerfile
 docker-compose.yml
 .dockerignore
+.drone.yml
 
 .editorconfig
 node_modules
