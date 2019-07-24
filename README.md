@@ -20,6 +20,6 @@ yarn run build
 yarn run lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Credits
+Favicon: [https://icons8.com/icons/set/rocket](Icons8.com)
 
