@@ -44,17 +44,11 @@ steps:
       - docker image prune -f
 
   - name: deploy
-    image: appleboy/drone-ssh
-    settings:
-      command_timeout: 5m
-      host: deploy.vivifyideas.com
-      username: deploy-app
-      ssh_key:
-        from_secret: ssh_key
-      port: 22
-      script:
-        - docker pull registry.vivifyideas.com/deploy/app:master
-        - docker service update --force --with-registry-auth --image registry.vivifyideas.com/deploy/app:master deploy_app
+    image: alpine
+    commands:
+      - apk add --no-cache curl
+      - source .tag
+      - sh deploy.sh
 
   - name: slack
     image: plugins/slack
