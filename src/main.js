@@ -48,7 +48,6 @@ const configureHttp = () => {
 				return Promise.reject(error);
 			}
 
-			console.log(error);
 			return Promise.reject(error);
 		}
 	);

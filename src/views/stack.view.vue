@@ -132,9 +132,8 @@ export default {
 			this.stopServicePolling();
 			DeployApi.updateStack().then((response) => {
 				this.startStackUpdateChecker(response.data['task_id']);
-			}).catch((error) => {
+			}).catch(() => {
 				this.startServicePolling();
-				console.log(error);
 			});
 		},
 		checkStackUpdate() {
@@ -149,7 +148,6 @@ export default {
 					this.stackUpdateFinished(error.response.data, true);
 				} else {
 					this.stackUpdateFinished({ 'err': 'Stack update failed', 'msg': 'Unknown error' }, true);
-					console.log(error);
 				}
 			});
 		},
@@ -187,7 +185,6 @@ export default {
 				} else {
 					this.dialogTitle = 'Delete service failed';
 					this.dialogContent = 'Unknown error';
-					console.log(error);
 				}
 				this.dialogButton = false;
 			});

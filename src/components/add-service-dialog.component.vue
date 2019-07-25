@@ -80,7 +80,6 @@ export default {
 			}).catch((error) => {
 				this.loading = false;
 				if (error.response && error.response.data) {
-					console.log(`${error.response.data.err} - ${error.response.data.msg}`);
 					this.error = `${error.response.data.err} - ${error.response.data.msg}`;
 				}
 			});
