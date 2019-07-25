@@ -39,7 +39,8 @@ steps:
     commands:
       - source .tag
       - docker login -u $REGISTRY_USER -p $REGISTRY_PASS registry.vivifyideas.com
-      - docker build -f Dockerfile -t registry.vivifyideas.com/deploy/app:$BRANCH --pull .
+      - docker build -t deploy-app-builder --target builder --pull .
+      - docker build -t registry.vivifyideas.com/deploy/app:$BRANCH --pull .
       - docker push registry.vivifyideas.com/deploy/app:$BRANCH
       - docker image prune -f
 
