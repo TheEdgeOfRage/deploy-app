@@ -8,8 +8,8 @@
 import Axios from 'axios';
 
 export default class DeployApi {
-	static updateStack() {
-		return Axios.post('/deploy');
+	static updateStack(services) {
+		return Axios.post('/deploy', services);
 	}
 
 	static checkStackUpdate(taskId) {

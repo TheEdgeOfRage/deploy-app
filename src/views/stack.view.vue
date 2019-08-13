@@ -51,6 +51,8 @@
 </template>
 
 <script>
+import * as _ from 'lodash';
+
 import ContainerApi from '@/api/container.api';
 import DeployApi from '@/api/deploy.api';
 import ServiceApi from '@/api/service.api';
@@ -101,6 +103,11 @@ export default {
 			dialogCallbackData: null,
 		};
 	},
+	computed: {
+		serviceNames() {
+			return _.map(this.services, (service) => service.name);
+		},
+	},
 	methods: {
 		openExecDialog(containerId) {
 			this.containerId = containerId;
@@ -130,7 +137,7 @@ export default {
 		updateStack() {
 			this.loadingDialog = true;
 			this.stopServicePolling();
-			DeployApi.updateStack().then((response) => {
+			DeployApi.updateStack(this.serviceNames).then((response) => {
 				this.startStackUpdateChecker(response.data['task_id']);
 			}).catch(() => {
 				this.startServicePolling();
@@ -215,7 +222,7 @@ export default {
 			this.loading = true;
 			this.loadingDialog = false;
 			this.showDialog = false;
-			this.stackUpdateInterval = setInterval(this.checkStackUpdate, 10000);
+			this.stackUpdateInterval = setInterval(this.checkStackUpdate, 5000);
 		},
 		stopStackUpdateChecker() {
 			this.loading = false;
