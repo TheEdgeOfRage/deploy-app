@@ -10,13 +10,18 @@ function deploy() {
 
 	while true; do
 		output=$(curl -s -X GET "https://${url}/api/tasks/${task_id}" -H "Accept: application/json")
-		echo $output
 		if ! echo $output | grep "Task is still running" >/dev/null; then
 			break
 		fi
 		echo "Waiting for deploy to finish"
 		sleep 5
 	done
+
+	if ! echo $output | grep "Successfully updated all services" >/dev/null; then
+		echo $output
+		echo "Deploy failed"
+		exit 1
+	fi
 
 	echo "Deploy finished"
 }
