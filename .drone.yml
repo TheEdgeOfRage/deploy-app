@@ -16,14 +16,6 @@ volumes:
       path: /mnt/drone-docker
 
 steps:
-  - name: tag
-    image: alpine
-    commands:
-      - apk add --no-cache git
-      - echo "export BRANCH="$(git rev-parse --abbrev-ref HEAD) > .tag
-      - echo "export COMMIT="$(git rev-parse --short HEAD) >> .tag
-      - cat .tag
-
   - name: build-app
     image: docker:dind
     environment:
@@ -37,18 +29,16 @@ steps:
       - name: docker_daemon
         path: /var/run/docker.sock
     commands:
-      - source .tag
       - docker login -u $REGISTRY_USER -p $REGISTRY_PASS registry.vivifyideas.com
       - docker build -t deploy-app-builder --target builder --pull .
-      - docker build -t registry.vivifyideas.com/deploy/app:$BRANCH --pull .
-      - docker push registry.vivifyideas.com/deploy/app:$BRANCH
+      - docker build -t registry.vivifyideas.com/deploy/app:${DRONE_BRANCH} --pull .
+      - docker push registry.vivifyideas.com/deploy/app:${DRONE_BRANCH}
       - docker image prune -f
 
   - name: deploy
     image: alpine
     commands:
       - apk add --no-cache curl
-      - source .tag
       - sh deploy.sh
 
   - name: slack
