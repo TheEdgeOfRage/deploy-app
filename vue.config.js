@@ -9,5 +9,6 @@ module.exports = {
 	devServer: {
 		disableHostCheck: true,
 		public: 'deploy.localhost',
+		port: 8000,
 	},
 };
