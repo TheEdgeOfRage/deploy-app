@@ -30,5 +30,5 @@ if [ ${BRANCH} = "master" ]; then
 	deploy 'deploy-deploy.vivifyideas.com' '["deploy_app"]'
 else
 	echo "Branch ${BRANCH} is not deployable"
+	exit 2
 fi
-

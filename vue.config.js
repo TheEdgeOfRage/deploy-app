@@ -11,4 +11,3 @@ module.exports = {
 		public: 'deploy.localhost',
 	},
 };
-

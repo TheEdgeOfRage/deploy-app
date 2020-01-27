@@ -14,13 +14,6 @@ RUN set -ex \
 FROM nginx:alpine
 
 EXPOSE 80
-CMD ["/entrypoint.sh"]
 
-COPY docker/default.template /etc/nginx/conf.d/
-COPY docker/entrypoint.sh /
-RUN set -ex \
-	&& apk add --no-cache bash \
-	&& chmod +x /entrypoint.sh
-
+COPY docker/default.conf /etc/nginx/conf.d/
 COPY --from=builder /app/dist /app
-
