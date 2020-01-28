@@ -111,4 +111,3 @@ export default class AuthController {
 		return Boolean(token);
 	}
 }
-

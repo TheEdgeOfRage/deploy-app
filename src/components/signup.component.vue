@@ -62,7 +62,7 @@
 					this.$router.push({ name: 'index' });
 				}).catch((error) => {
 					if (error.response) {
-						this.signupErrors.push(error.response.data);
+						this.signupErrors.push(error.response.data.err);
 					}
 				});
 			},

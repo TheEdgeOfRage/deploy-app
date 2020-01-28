@@ -23,7 +23,7 @@
 			<p
 				v-for="(error, index) in loginErrors"
 				:key="index"
-				class="login-errors"
+				class="red--text"
 			>{{ error }}</p>
 			<v-btn type="submit">Login</v-btn>
 		</form>
@@ -58,10 +58,7 @@ export default {
 					return;
 				}
 
-				const errors = error.response.data.non_field_errors;
-				for (let i = 0; i < errors.length; i++) {
-					this.loginErrors.push(errors[i]);
-				}
+				this.loginErrors.push(error.response.data.err);
 			});
 		},
 	},
@@ -72,8 +69,5 @@ export default {
 .login-form-card
 	padding 2rem
 	margin-top 5rem
-
-.login-errors
-	color red
 </style>
 
