@@ -3,12 +3,6 @@
 		<h3>Create User</h3>
 		<form @submit="submit">
 			<v-text-field
-				v-model="url"
-				label="URL"
-				type="text"
-				required>
-			</v-text-field>
-			<v-text-field
 				v-model="username"
 				label="Username"
 				type="text"
@@ -44,7 +38,6 @@
 		name: 'signup',
 		data() {
 			return {
-				url: '',
 				username: '',
 				password: '',
 				passwordConfirm: '',
@@ -62,7 +55,6 @@
 				}
 
 				const data = {
-					url: this.url,
 					username: this.username,
 					password: this.password,
 				};

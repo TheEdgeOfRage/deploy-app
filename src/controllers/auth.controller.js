@@ -63,7 +63,6 @@ export default class AuthController {
 	}
 
 	static signup(data) {
-		Axios.defaults.baseURL = `${data.url}/api`;
 		return AuthApi.signup(data);
 	}
 
