@@ -1,8 +1,8 @@
 version: '3'
 services:
   app:
-    build: .
-    container_name: deploy-app
+    image: theedgeofrage/deploy-app
+    restart: unless-stopped
     deploy:
      restart_policy:
        condition: on-failure
