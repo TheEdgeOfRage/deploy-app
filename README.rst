@@ -1,5 +1,5 @@
 ==========
-deploy-app
+Deploy App
 ==========
 
 This webapp is a frontend for the deploy-webhook_ API. It allows for management
@@ -56,7 +56,7 @@ newest images from the registry and atomically updating all services.
 Screenshots
 ===========
 
-.. image:: https://pyazo.theedgeofrage.com/KHLJO4Dx9gHgxcV3q0UU6ya9fwyUGOQb.png
+.. image:: https://pyazo.theedgeofrage.com/FJ4tNuH3zHwu5ApdKvGRPeQ7qyOEF7JQ.png
 
 .. image:: https://pyazo.theedgeofrage.com/bIzPtkd8Piodko7BwI3lQx07vTdddKcA.png
 
