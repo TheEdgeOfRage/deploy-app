@@ -1,3 +1,4 @@
+==========
 deploy-app
 ==========
 
@@ -7,10 +8,10 @@ of Docker services and its containers.
 .. _deploy-webhook: https://github.com/TheEdgeOfRage/deploy-webhook
 
 Installation
-------------
+============
 
 Docker
-~~~~~~
+------
 
 Adjust the port in the `docker-compose.yml` file if necessary and run:
 
@@ -19,7 +20,7 @@ Adjust the port in the `docker-compose.yml` file if necessary and run:
     docker-compose up -d
 
 Host
-~~~~
+----
 
 Install the dependencies and run a production build with:
 
@@ -32,7 +33,7 @@ Copy the contents of the `dist` folder to the webserver root. Everything is
 completely static, so no other server is needed.
 
 Usage
------
+=====
 
 When opening the app for the first time, a login screen is shown. The URL field
 must contain the link to the backend API. As for the username and password,
@@ -53,7 +54,7 @@ The yellow reload button at the bottom triggers a stack update, pulling the
 newest images from the registry and atomically updating all services.
 
 Screenshots
------------
+===========
 
 .. image:: https://pyazo.theedgeofrage.com/KHLJO4Dx9gHgxcV3q0UU6ya9fwyUGOQb.png
 
@@ -62,27 +63,32 @@ Screenshots
 .. image:: https://pyazo.theedgeofrage.com/nKKvA1sL4HjWBis5gxxepJNwIBHROg2V.png
 
 Development setup
------------------
+=================
 
 .. sourcecode:: bash
 
     yarn install
 
 Compiles and hot-reloads for development
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+----------------------------------------
 
 .. sourcecode:: bash
 
     yarn run serve
 
 Lints and fixes files
-~~~~~~~~~~~~~~~~~~~~~
+---------------------
 
 .. sourcecode:: bash
 
     yarn run lint
+License
+=======
+
+This software is distributed under terms of the BSD-3-Clause license.
+
 
 Credits
--------
+=======
 
 Favicon: https://icons8.com/icons/set/rocket
