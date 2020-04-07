@@ -132,4 +132,3 @@ table.v-table thead th, table.v-table tbody td
 	display flex
 	justify-content flex-end
 </style>
-

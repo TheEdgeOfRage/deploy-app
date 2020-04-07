@@ -39,4 +39,3 @@ export default class AuthApi {
 		return Axios.post(ENDPOINTS.REFRESH, {}, { headers: { 'Authorization': `Bearer ${refresh_token}` } });
 	}
 }
-

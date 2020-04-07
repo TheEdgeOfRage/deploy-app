@@ -61,4 +61,3 @@ export default {
 		&::after
 			display none
 </style>
-

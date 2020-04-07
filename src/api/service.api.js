@@ -20,4 +20,3 @@ export default class ServiceApi {
 		return Axios.delete(`/services/${name}`);
 	}
 }
-

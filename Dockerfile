@@ -15,5 +15,5 @@ FROM nginx:alpine
 
 EXPOSE 80
 
-COPY docker/default.conf /etc/nginx/conf.d/
+COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /app/dist /app

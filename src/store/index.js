@@ -19,5 +19,3 @@ const storeData = {
 };
 
 export default new Vuex.Store(storeData);
-
-

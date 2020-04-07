@@ -16,4 +16,3 @@ export default class DeployApi {
 		return Axios.get(`/tasks/${taskId}`);
 	}
 }
-

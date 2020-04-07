@@ -78,4 +78,3 @@
 .signup-errors
 	color red
 </style>
-
